@@ -1,5 +1,4 @@
-# syntax=docker/dockerfile:1.4
-FROM --platform=$BUILDPLATFORM node:18-alpine AS development
+FROM node:18-alpine
 
 WORKDIR /var/www/html
 

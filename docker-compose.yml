@@ -2,7 +2,7 @@ version: "3"
 
 services:
 
-  app:
+  frontend:
     image: traefik-frontend
     build: frontend
     ports:
@@ -11,12 +11,12 @@ services:
       - ./frontend:/var/www/html
       - /var/www/html/node_modules
     labels:
-      - "traefik.http.routers.app.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.frontend.rule=Host(`app.localhost`)"
       - "traefik.docker.network=default"
     depends_on:
       - traefik
 
-  api:
+  backend:
     image: traefik-backend
     build: backend
     ports:
@@ -25,7 +25,7 @@ services:
       - ./backend:/var/www/html
       - /var/www/html/vendor
     labels:
-      - "traefik.http.routers.api.rule=(Host(`app.localhost`) && PathPrefix(`/api`))"
+      - "traefik.http.routers.backend.rule=(Host(`app.localhost`) && PathPrefix(`/api`))"
       - "traefik.docker.network=default"
     depends_on:
       - traefik
