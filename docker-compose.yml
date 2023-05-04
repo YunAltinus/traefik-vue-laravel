@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+
+  app:
+    image: traefik-frontend
+    build: frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/var/www/html
+      - /var/www/html/node_modules
+    labels:
+      - "traefik.http.routers.app.rule=Host(`app.localhost`)"
+      - "traefik.docker.network=default"
+    depends_on:
+      - traefik
+
+  api:
+    image: traefik-backend
+    build: backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    labels:
+      - "traefik.http.routers.api.rule=(Host(`app.localhost`) && PathPrefix(`/api`))"
+      - "traefik.docker.network=default"
+    depends_on:
+      - traefik
+
+  traefik:
+    image: traefik:v2.10
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
